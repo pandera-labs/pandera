@@ -37,8 +37,7 @@ from pandera.api.pyspark.model_components import (
 )
 from pandera.api.pyspark.model_config import BaseConfig
 from pandera.errors import SchemaInitError
-from pandera.typing import AnnotationInfo
-from pandera.typing.common import DataFrameBase
+from pandera.typing import AnnotationInfo, DataFrame
 
 try:
     from typing_extensions import get_type_hints
@@ -140,10 +139,11 @@ class DataFrameModel(BaseModel):
     __root_checks__: List[Check] = []
 
     @docstring_substitution(validate_doc=DataFrameSchema.validate.__doc__)
-    def __new__(cls, *args, **kwargs) -> DataFrameBase[TDataFrameModel]:  # type: ignore [misc]
+    def __new__(cls, *args, **kwargs) -> DataFrame[TDataFrameModel]:  # type: ignore [misc]
         """%(validate_doc)s"""
         return cast(
-            DataFrameBase[TDataFrameModel], cls.validate(*args, **kwargs)
+            DataFrame[TDataFrameModel],
+            cls.validate(*args, **kwargs),
         )
 
     def __init_subclass__(cls, **kwargs):
@@ -282,10 +282,10 @@ class DataFrameModel(BaseModel):
         random_state: Optional[int] = None,
         lazy: bool = True,
         inplace: bool = False,
-    ) -> Optional[DataFrameBase[TDataFrameModel]]:
+    ) -> Optional[DataFrame[TDataFrameModel]]:
         """%(validate_doc)s"""
         return cast(
-            DataFrameBase[TDataFrameModel],
+            DataFrame[TDataFrameModel],
             cls.to_schema().validate(
                 check_obj, head, tail, sample, random_state, lazy, inplace
             ),

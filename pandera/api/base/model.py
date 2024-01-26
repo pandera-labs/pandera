@@ -44,7 +44,7 @@ class BaseModel(metaclass=MetaModel):
     __checks__: Dict[str, List[Check]] = {}
     __root_checks__: List[Check] = []
 
-    # This is syntantic sugar that delegates to the validate method
+    # This is syntactic sugar that delegates to the validate method
     def __new__(cls, *args, **kwargs) -> Any:
         raise NotImplementedError
 
