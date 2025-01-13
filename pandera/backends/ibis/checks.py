@@ -1,8 +1,7 @@
 """Check backend for Ibis."""
 
 from functools import partial
-from typing import Optional
-
+from typing import Optional, Union
 
 import ibis
 import ibis.expr.types as ir
@@ -41,11 +40,13 @@ class IbisCheckBackend(BaseCheckBackend):
         """Implements aggregation behavior for check object."""
         raise NotImplementedError
 
-    def preprocess(self, check_obj: ir.Table, key: Optional[str]):
+    def preprocess(
+        self, check_obj: Union[ir.Column, ir.Table], key: Optional[str]
+    ):
         """Preprocesses a check object before applying the check function."""
-        # This handles the case of Series validation, which has no other context except
-        # for the index to groupby on. Right now grouping by the index is not allowed.
-        return check_obj
+        # This handles the case of Column validation by promoting it to
+        # a Table with a single column. Table inputs are unaffected.
+        return check_obj.as_table()
 
     def apply(self, check_obj: IbisData):
         """Apply the check function to a check object."""

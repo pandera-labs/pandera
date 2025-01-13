@@ -1,4 +1,4 @@
-"""PySpark implementation of built-in checks"""
+"""Built-in checks for PySpark."""
 
 from typing import Any, Iterable, TypeVar
 

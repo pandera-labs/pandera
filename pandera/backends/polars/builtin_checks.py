@@ -18,9 +18,9 @@ T = TypeVar("T")
 def equal_to(data: PolarsData, value: Any) -> pl.LazyFrame:
     """Ensure all elements of a data container equal a certain value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param value: values in this polars data structure must be
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param value: Values in this Polars data structure must be
         equal to this value.
     """
     return data.lazyframe.select(pl.col(data.key).eq(value))
@@ -33,9 +33,9 @@ def equal_to(data: PolarsData, value: Any) -> pl.LazyFrame:
 def not_equal_to(data: PolarsData, value: Any) -> pl.LazyFrame:
     """Ensure no elements of a data container equals a certain value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param value: This value must not occur in the checked
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param value: This value must not occur in the checked data structure.
     """
     return data.lazyframe.select(pl.col(data.key).ne(value))
 
@@ -49,10 +49,10 @@ def greater_than(data: PolarsData, min_value: Any) -> pl.LazyFrame:
     Ensure values of a data container are strictly greater than a minimum
     value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param min_value: Lower bound to be exceeded. Must be
-            a type comparable to the dtype of the series datatype of Polars
+        a type comparable to the dtype of the series datatype of Polars.
     """
     return data.lazyframe.select(pl.col(data.key).gt(min_value))
 
@@ -64,10 +64,10 @@ def greater_than(data: PolarsData, min_value: Any) -> pl.LazyFrame:
 def greater_than_or_equal_to(data: PolarsData, min_value: Any) -> pl.LazyFrame:
     """Ensure all values are greater or equal a certain value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param min_value: Allowed minimum value for values of a series. Must be
-            a type comparable to the dtype of the series datatype of Polars
+        a type comparable to the dtype of the series datatype of Polars.
     """
     return data.lazyframe.select(pl.col(data.key).ge(min_value))
 
@@ -79,10 +79,10 @@ def greater_than_or_equal_to(data: PolarsData, min_value: Any) -> pl.LazyFrame:
 def less_than(data: PolarsData, max_value: Any) -> pl.LazyFrame:
     """Ensure values of a series are strictly below a maximum value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param max_value: All elements of a series must be strictly smaller
-        than this. Must be a type comparable to the dtype of the series datatype of Polars
+        than this. Must be a type comparable to the dtype of the series datatype of Polars.
     """
     return data.lazyframe.select(pl.col(data.key).lt(max_value))
 
@@ -94,8 +94,8 @@ def less_than(data: PolarsData, max_value: Any) -> pl.LazyFrame:
 def less_than_or_equal_to(data: PolarsData, max_value: Any) -> pl.LazyFrame:
     """Ensure values of a series are strictly below a maximum value.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param max_value: Upper bound not to be exceeded. Must be a type comparable to the dtype of the
     series datatype of Polars
     """
@@ -118,8 +118,8 @@ def in_range(
     Both endpoints must be a type comparable to the dtype of the
     series datatype of Polars
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param min_value: Left / lower endpoint of the interval.
     :param max_value: Right / upper endpoint of the interval. Must not be
         smaller than min_value.
@@ -150,8 +150,8 @@ def isin(data: PolarsData, allowed_values: Iterable) -> pl.LazyFrame:
     in allowed_values at least once can meet this condition. If you
     want to check for substrings use :meth:`Check.str_contains`.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
     :param allowed_values: The set of allowed values. May be any iterable.
     """
     return data.lazyframe.select(pl.col(data.key).is_in(allowed_values))
@@ -169,7 +169,7 @@ def notin(data: PolarsData, forbidden_values: Iterable) -> pl.LazyFrame:
     design.
 
     :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
+        to access the dataframe is "dataframe" and column name using "key".
     :param forbidden_values: The set of values which should not occur. May
         be any iterable.
     """
@@ -187,9 +187,9 @@ def str_matches(
 ) -> pl.LazyFrame:
     """Ensure that string starts with a match of a regular expression pattern.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param pattern: Regular expression pattern to use for matching
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param pattern: Regular expression pattern to use for matching.
     """
     pattern = pattern.pattern if isinstance(pattern, re.Pattern) else pattern
     if not pattern.startswith("^"):
@@ -208,9 +208,9 @@ def str_contains(
 ) -> pl.LazyFrame:
     """Ensure that a pattern can be found in the string.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param pattern: Regular expression pattern to use for searching
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param pattern: Regular expression pattern to use for searching.
     """
 
     pattern = pattern.pattern if isinstance(pattern, re.Pattern) else pattern
@@ -225,9 +225,9 @@ def str_contains(
 def str_startswith(data: PolarsData, string: str) -> pl.LazyFrame:
     """Ensure that all values start with a certain string.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param string: String all values should start with
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param string: String all values should start with.
     """
 
     return data.lazyframe.select(pl.col(data.key).str.starts_with(string))
@@ -237,9 +237,9 @@ def str_startswith(data: PolarsData, string: str) -> pl.LazyFrame:
 def str_endswith(data: PolarsData, string: str) -> pl.LazyFrame:
     """Ensure that all values end with a certain string.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param string: String all values should end with
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param string: String all values should end with.
     """
     return data.lazyframe.select(pl.col(data.key).str.ends_with(string))
 
@@ -254,10 +254,10 @@ def str_length(
 ) -> pl.LazyFrame:
     """Ensure that the length of strings is within a specified range.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param min_value: Minimum length of strings (including) (default: no minimum)
-    :param max_value: Maximum length of strings (including) (default: no maximum)
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param min_value: Minimum length of strings (inclusive). (default: no minimum)
+    :param max_value: Maximum length of strings (inclusive). (default: no maximum)
     """
     if min_value is None and max_value is None:
         raise ValueError(
@@ -285,9 +285,9 @@ def unique_values_eq(data: PolarsData, values: Iterable) -> bool:
         In contrast with :func:`isin`, this check makes sure that all the items
         in the ``values`` iterable are contained within the series.
 
-    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The keys
-                to access the dataframe is "dataframe" and column name using "key".
-    :param values: The set of values that must be present. Maybe any iterable.
+    :param data: NamedTuple PolarsData contains the dataframe and column name for the check. The key
+        to access the dataframe is "dataframe", and the key the to access the column name is "key".
+    :param values: The set of values that must be present. May be any iterable.
     """
 
     return (

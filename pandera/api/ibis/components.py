@@ -9,6 +9,7 @@ from pandera.api.dataframe.components import ComponentSchema
 from pandera.api.ibis.types import IbisDtypeInputTypes
 from pandera.backends.ibis.register import register_ibis_backends
 from pandera.engines import ibis_engine
+from pandera.utils import is_regex
 
 
 class Column(ComponentSchema[ir.Table]):
@@ -110,6 +111,12 @@ class Column(ComponentSchema[ir.Table]):
     @dtype.setter
     def dtype(self, value) -> None:
         self._dtype = ibis_engine.Engine.dtype(value) if value else None
+
+    @property
+    def selector(self):
+        if self.name is not None and not is_regex(self.name) and self.regex:
+            return f"^{self.name}$"
+        return self.name
 
     def set_name(self, name: str):
         """Set or modify the name of a column object.

@@ -41,8 +41,6 @@ class PolarsCheckBackend(BaseCheckBackend):
 
     def preprocess(self, check_obj: pl.LazyFrame, key: Optional[str]):
         """Preprocesses a check object before applying the check function."""
-        # This handles the case of Series validation, which has no other context except
-        # for the index to groupby on. Right now grouping by the index is not allowed.
         return check_obj
 
     def apply(self, check_obj: PolarsData):
