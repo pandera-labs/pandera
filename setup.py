@@ -55,7 +55,7 @@ setup(
         "typing_inspect >= 0.6.0",
     ],
     extras_require=extras_require,
-    python_requires=">=3.7",
+    python_requires=">=3.8",
     platforms="any",
     classifiers=[
         "Development Status :: 5 - Production/Stable",

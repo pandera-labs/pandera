@@ -40,11 +40,7 @@ We encourage you to [file an issue](https://github.com/pandera-dev/pandera/issue
 if you find any false positives or negatives being reported by `mypy`.
 A list of such issues can be found [here](https://github.com/pandera-dev/pandera/labels/mypy).
 We'll most likely have to escalate this to the official `pandas-stubs`
-[issues](https://github.com/pandas-dev/pandas-stubs/issues) .
-
-Also, be aware that the latest pandas-stubs versions only support Python 3.8+.
-So, if you are using Python 3.7, you will not face an error when installing this package,
-but pip will install an older version of pandas-stubs with outdated type annotations.
+[issues](https://github.com/pandas-dev/pandas-stubs/issues).
 :::
 
 In the example below, we define a few schemas to see how type-linting with
