@@ -30,7 +30,7 @@ jobs:
     strategy:
       fail-fast: true
       matrix:
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
     defaults:
       run:
         shell: bash -l {0}
@@ -103,7 +103,7 @@ jobs:
         - windows-latest
         - macos-13
         # - macos-latest  # see: https://github.com/actions/setup-python/issues/696
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         pandas-version: ["1.5.3", "2.2.2"]
         pydantic-version: ["1.10.11", "2.3.0"]
         include:
@@ -119,6 +119,8 @@ jobs:
         - python-version: "3.8"
           pandas-version: "2.2.2"
         - python-version: "3.11"
+          pandas-version: "1.5.3"
+        - python-version: "3.12"
           pandas-version: "1.5.3"
 
     steps:
@@ -180,7 +182,7 @@ jobs:
         - windows-latest
         - macos-13
         # - macos-latest  # see: https://github.com/actions/setup-python/issues/696
-        python-version: ["3.8", "3.9", "3.10", "3.11"]
+        python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
         pandas-version: ["2.2.2"]
         pydantic-version: ["2.3.0"]
         polars-version: ["0.20.31", "1.2.0"]
@@ -209,6 +211,8 @@ jobs:
         - python-version: "3.8"
           pandas-version: "2.2.2"
         - python-version: "3.11"
+          pandas-version: "1.5.3"
+        - python-version: "3.12"
           pandas-version: "1.5.3"
           # mypy tests hang on windows
         - extra: mypy

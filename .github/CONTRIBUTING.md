@@ -39,7 +39,7 @@ Pandera offers a `environment.yml` to set up a conda-based environment and
 Install [miniconda](https://docs.conda.io/en/latest/miniconda.html), then run:
 
 ```bash
-conda create -n pandera-dev python=3.11  # or any python version 3.7+
+conda create -n pandera-dev python=3.12  # or any python version 3.7+
 conda env update -n pandera-dev -f environment.yml
 conda activate pandera-dev
 pip install -e .
@@ -52,7 +52,7 @@ pip install virtualenv
 virtualenv .venv/pandera-dev
 source .venv/pandera-dev/bin/activate
 pip install --upgrade pip
-pip install -r dev/requirements-3.11.txt  # or any python version 3.7+
+pip install -r dev/requirements-3.12.txt  # or any python version 3.7+
 pip install -e .
 ```
 
