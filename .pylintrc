@@ -55,4 +55,6 @@ disable=
     redefined-outer-name,
     logging-fstring-interpolation,
     multiple-statements,
-    cyclic-import
+    cyclic-import,
+    # Due to custom `immutable` decorator replacing `dataclasses.dataclass`
+    invalid-field-call
