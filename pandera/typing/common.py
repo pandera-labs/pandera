@@ -131,7 +131,6 @@ def __patched_generic_alias_call(self, *args, **kwargs):
     except (
         TypeError,
         errors.SchemaError,
-        errors.SchemaError,
         errors.SchemaInitError,
         errors.SchemaDefinitionError,
     ):

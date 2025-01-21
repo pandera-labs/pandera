@@ -139,17 +139,15 @@ def _build_number_equivalents(
 
     return {
         bit_width: list(
-            set(
-                (
-                    # e.g.: numpy.int64
-                    getattr(np, f"{builtin_name}{bit_width}"),
-                    # e.g.: pandera.dtypes.Int64
-                    getattr(dtypes, f"{pandera_name}{bit_width}"),
-                    getattr(dtypes, f"{pandera_name}{bit_width}")(),
-                    # e.g.: pandera.dtypes.Int(64)
-                    getattr(dtypes, pandera_name)(),
-                )
-            )
+            {
+                # e.g.: numpy.int64
+                getattr(np, f"{builtin_name}{bit_width}"),
+                # e.g.: pandera.dtypes.Int64
+                getattr(dtypes, f"{pandera_name}{bit_width}"),
+                getattr(dtypes, f"{pandera_name}{bit_width}")(),
+                # e.g.: pandera.dtypes.Int(64)
+                getattr(dtypes, pandera_name)(),
+            }
             | set(default_equivalents if bit_width == default_size else [])
         )
         for bit_width in sizes

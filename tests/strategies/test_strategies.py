@@ -30,21 +30,19 @@ else:
     HAS_HYPOTHESIS = True
 
 
-UNSUPPORTED_DTYPE_CLS: Set[Any] = set(
-    [
-        pandas_engine.Interval,
-        pandas_engine.Period,
-        pandas_engine.Sparse,
-        pandas_engine.PydanticModel,
-        pandas_engine.Decimal,
-        pandas_engine.Date,
-        pandas_engine.PythonDict,
-        pandas_engine.PythonList,
-        pandas_engine.PythonTuple,
-        pandas_engine.PythonTypedDict,
-        pandas_engine.PythonNamedTuple,
-    ]
-)
+UNSUPPORTED_DTYPE_CLS: Set[Any] = {
+    pandas_engine.Interval,
+    pandas_engine.Period,
+    pandas_engine.Sparse,
+    pandas_engine.PydanticModel,
+    pandas_engine.Decimal,
+    pandas_engine.Date,
+    pandas_engine.PythonDict,
+    pandas_engine.PythonList,
+    pandas_engine.PythonTuple,
+    pandas_engine.PythonTypedDict,
+    pandas_engine.PythonNamedTuple,
+}
 
 if pandas_engine.PYARROW_INSTALLED and pandas_engine.PANDAS_2_0_0_PLUS:
     UNSUPPORTED_DTYPE_CLS.update(

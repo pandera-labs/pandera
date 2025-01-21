@@ -176,7 +176,7 @@ if GEOPANDAS_INSTALLED:
             if buffer is None:
                 return out
             elif buffer.closed:
-                raise IOError(
+                raise OSError(
                     f"geopandas=={gpd.__version__} closed the buffer automatically "
                     f"using the serialization method {writer}. Use a later "
                     "version of pandas or use a different the serialization "

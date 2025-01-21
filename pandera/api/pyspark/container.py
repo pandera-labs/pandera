@@ -6,7 +6,17 @@ import copy
 import os
 import warnings
 from pathlib import Path
-from typing import Any, Dict, List, Optional, Type, Union, cast, overload
+from typing import (
+    TYPE_CHECKING,
+    Any,
+    Dict,
+    List,
+    Optional,
+    Type,
+    Union,
+    cast,
+    overload,
+)
 
 from pyspark.sql import DataFrame, SparkSession
 from pyspark.sql.types import StructField, StructType
@@ -22,6 +32,9 @@ from pandera.config import get_config_context
 from pandera.dtypes import DataType, UniqueSettings
 from pandera.engines import pyspark_engine
 
+if TYPE_CHECKING:
+    import pandera.api.pyspark.components
+
 N_INDENT_SPACES = 4
 
 
@@ -31,7 +44,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
     def __init__(
         self,
         columns: Optional[  # type: ignore [name-defined]
-            Dict[Any, "pandera.api.pyspark.components.Column"]  # type: ignore [name-defined]
+            Dict[Any, pandera.api.pyspark.components.Column]  # type: ignore [name-defined]
         ] = None,
         checks: Optional[CheckList] = None,
         dtype: PySparkDtypeInputTypes = None,
@@ -129,7 +142,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
             metadata=metadata,
         )
 
-        self.columns: Dict[Any, "pandera.api.pyspark.components.Column"] = (  # type: ignore [name-defined]
+        self.columns: Dict[Any, pandera.api.pyspark.components.Column] = (  # type: ignore [name-defined]
             {} if columns is None else columns
         )
 
@@ -458,7 +471,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
         yield cls._pydantic_validate
 
     @classmethod
-    def _pydantic_validate(cls, schema: Any) -> "DataFrameSchema":
+    def _pydantic_validate(cls, schema: Any) -> DataFrameSchema:
         """Verify that the input is a compatible DataFrameSchema."""
         if not isinstance(schema, cls):  # type: ignore
             raise TypeError(f"{schema} is not a {cls}.")
@@ -469,7 +482,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
     # Schema IO Methods #
     #####################
 
-    def to_script(self, fp: Union[str, Path] = None) -> "DataFrameSchema":
+    def to_script(self, fp: Union[str, Path] = None) -> DataFrameSchema:
         """Create DataFrameSchema from yaml file.
 
         :param path: str, Path to write script
@@ -481,7 +494,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
         return pandera.io.to_script(self, fp)
 
     @classmethod
-    def from_yaml(cls, yaml_schema) -> "DataFrameSchema":
+    def from_yaml(cls, yaml_schema) -> DataFrameSchema:
         """Create DataFrameSchema from yaml file.
 
         :param yaml_schema: str, Path to yaml schema, or serialized yaml
@@ -505,7 +518,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
         return pandera.io.to_yaml(self, stream=stream)
 
     @classmethod
-    def from_json(cls, source) -> "DataFrameSchema":
+    def from_json(cls, source) -> DataFrameSchema:
         """Create DataFrameSchema from json file.
 
         :param source: str, Path to json schema, or serialized yaml
@@ -572,7 +585,7 @@ class DataFrameSchema(BaseSchema):  # pylint: disable=too-many-public-methods
 
 
 def _validate_columns(
-    column_dict: dict[Any, "pandera.api.pyspark.components.Column"],  # type: ignore [name-defined]
+    column_dict: dict[Any, pandera.api.pyspark.components.Column],  # type: ignore [name-defined]
 ) -> None:
     for column_name, column in column_dict.items():
         for check in column.checks:
@@ -590,8 +603,8 @@ def _validate_columns(
 
 
 def _columns_renamed(
-    columns: dict[Any, "pandera.api.pyspark.components.Column"],  # type: ignore [name-defined]
-) -> dict[Any, "pandera.api.pyspark.components.Column"]:  # type: ignore [name-defined]
+    columns: dict[Any, pandera.api.pyspark.components.Column],  # type: ignore [name-defined]
+) -> dict[Any, pandera.api.pyspark.components.Column]:  # type: ignore [name-defined]
     def renamed(column, new_name):
         column = copy.deepcopy(column)
         column.set_name(new_name)

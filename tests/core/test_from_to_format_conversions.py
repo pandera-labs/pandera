@@ -285,13 +285,13 @@ def test_to_format(schema, from_fn, buf_cls):
     df = mock_dataframe()
 
     if _needs_pyarrow(schema):
-        with pytest.raises((ImportError)):
+        with pytest.raises(ImportError):
             fn(df)
         return
 
     try:
         out = fn(df)
-    except IOError:
+    except OSError:
         pytest.skip(
             f"pandas=={pd.__version__} automatically closes the buffer, for "
             "more details see: "

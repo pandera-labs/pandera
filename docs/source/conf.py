@@ -364,11 +364,11 @@ class CustomWarningSuppressor(pylogging.Filter):
 
 def add_warning_suppressor(app: sphinx.application.Sphinx) -> None:
     logger = pylogging.getLogger("sphinx")
-    warning_handler, *_ = [
+    warning_handler, *_ = (
         h
         for h in logger.handlers
         if isinstance(h, logging.WarningStreamHandler)
-    ]
+    )
     warning_handler.filters.insert(0, CustomWarningSuppressor(app))
 
 

@@ -65,7 +65,7 @@ def _build_setup_requirements() -> Dict[str, List[Requirement]]:
 
 def _build_dev_requirements() -> List[Requirement]:
     """Load requirements from file."""
-    with open(REQUIREMENT_PATH, "rt", encoding="utf-8") as req_file:
+    with open(REQUIREMENT_PATH, encoding="utf-8") as req_file:
         reqs = []
         for req in parse_requirements(req_file.read()):
             req.marker = None

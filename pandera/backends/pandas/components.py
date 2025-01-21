@@ -214,7 +214,7 @@ class ColumnBackend(ArraySchemaBackend):
         # pylint: disable=fixme
         # TODO: use singledispatchmethod here
         if is_field(check_obj) or is_index(check_obj):
-            return super(ColumnBackend, self).coerce_dtype(
+            return super().coerce_dtype(
                 check_obj,
                 schema=schema,
             )
