@@ -12,6 +12,10 @@ from typing import (  # type: ignore[attr-defined]
     Type,
     TypeVar,
     Union,
+    List,
+    Dict,
+    Tuple,
+    NamedTuple,
     _GenericAlias,
 )
 
@@ -63,6 +67,10 @@ GenericDtype = TypeVar(  # type: ignore
         int,
         str,
         float,
+        List[Any],
+        Dict[Any, Any],
+        Tuple[Any],
+        NamedTuple,
         pd.core.dtypes.base.ExtensionDtype,
         Bool,
         Date,

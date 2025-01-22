@@ -2,7 +2,7 @@
 
 # pylint:disable=missing-class-docstring,too-few-public-methods
 import re
-from typing import Any, Dict, Optional, Type
+from typing import Any, Dict, List, NamedTuple, Optional, Tuple, Type
 
 import numpy as np
 import pandas as pd
@@ -495,3 +495,33 @@ def test_init_pandas_dataframe_errors(invalid_data):
     """Test errors from initializing a pandas.typing.DataFrame with Schema."""
     with pytest.raises(pa.errors.SchemaError):
         DataFrame[InitSchema](invalid_data)
+
+
+class ExampleNamedTuple(NamedTuple):
+    a: int
+    b: float
+
+
+class SchemaComplexPythonCollectionTypes(pa.DataFrameModel):
+    list: List[pa.typing.Int32]
+    dict: Dict[str, pa.typing.Int32]
+    tuple2: Tuple[pa.typing.Int32, pa.typing.Int32]
+    named_tuple: ExampleNamedTuple
+
+
+def test_complex_python_collection_types():
+    """Test complex python collection types."""
+    assert isinstance(
+        DataFrame[SchemaComplexPythonCollectionTypes](
+            {
+                "list": [[1, 2], [3, 4, 5]],
+                "dict": [{"a": 1, "b": 2}, {"c": 1, "d": 2}],
+                "tuple2": [[6, 7], [8, 9]],
+                "named_tuple": [
+                    ExampleNamedTuple(1, 2),
+                    ExampleNamedTuple(3, 4),
+                ],
+            }
+        ),
+        DataFrame,
+    )
