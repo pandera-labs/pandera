@@ -37,8 +37,14 @@ repos:
     hooks:
       - id: black
 
+  - repo: https://github.com/asottile/pyupgrade
+    rev: v3.19.1
+    hooks:
+      - id: pyupgrade
+        args: [--py38-plus, --keep-runtime-typing]
+
   - repo: https://github.com/pycqa/pylint
-    rev: v2.17.3
+    rev: v3.2.7
     hooks:
       - id: pylint
         args: ["--disable=import-error"]

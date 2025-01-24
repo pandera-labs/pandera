@@ -121,7 +121,7 @@ class BaseClass:
                 sample_data, methodcaller("encode")
             )
 
-        return data_dict
+        return data_dict  # pylint:disable=possibly-used-before-assignment
 
     @staticmethod
     def check_function(

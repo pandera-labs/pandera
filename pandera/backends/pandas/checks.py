@@ -59,9 +59,9 @@ class PandasCheckBackend(BaseCheckBackend):
                 (k if isinstance(k, bool) else k[0] if len(k) == 1 else k): v
                 for k, v in groupby_obj  # type: ignore[union-attr]
             }
-        group_keys = set(
+        group_keys = {
             k[0] if len(k) == 1 else k for k, _ in groupby_obj  # type: ignore[union-attr]
-        )
+        }
         invalid_groups = [g for g in groups if g not in group_keys]
         if invalid_groups:
             raise KeyError(

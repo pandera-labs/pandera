@@ -9,7 +9,6 @@ asv==0.6.4
 asv-runner==0.2.1
 attrs==24.3.0
 babel==2.16.0
-backports-tarfile==1.2.0
 beautifulsoup4==4.12.3
 black==24.10.0
 build==1.2.2.post1

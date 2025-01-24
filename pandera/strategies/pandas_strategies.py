@@ -56,6 +56,7 @@ if HAS_HYPOTHESIS:
 else:
     from pandera.strategies.base_strategies import SearchStrategy, composite
 
+# pylint: disable=possibly-used-before-assignment
 
 StrategyFn = Callable[..., SearchStrategy]
 # Fix this when modules have been re-organized to avoid circular imports

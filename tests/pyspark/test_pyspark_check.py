@@ -220,7 +220,7 @@ class BaseClass:
         if convert_type == "decimal":
             data_dict = BaseClass.convert_value(sample_data, decimal.Decimal)
 
-        return data_dict
+        return data_dict  # pylint:disable=possibly-used-before-assignment
 
     @staticmethod
     def convert_timestamp_to_date(sample_data):

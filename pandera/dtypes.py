@@ -63,7 +63,7 @@ class DataType(ABC):
 
     def check(
         self,
-        pandera_dtype: "DataType",
+        pandera_dtype: DataType,
         data_container: Optional[Any] = None,  # pylint:disable=unused-argument
     ) -> Union[bool, Iterable[bool]]:
         """Check that pandera :class:`~pandera.dtypes.DataType` are equivalent.
@@ -153,7 +153,7 @@ class _Number(DataType):
     """Whether the data type is an exact representation of a number."""
 
     def check(
-        self, pandera_dtype: "DataType", data_container: Optional[Any] = None
+        self, pandera_dtype: DataType, data_container: Optional[Any] = None
     ) -> Union[bool, Iterable[bool]]:
         if self.__class__ is _Number:
             return isinstance(pandera_dtype, _Number)
@@ -206,7 +206,7 @@ class Int(_PhysicalNumber):  # type: ignore
     """Whether the integer data type is signed."""
 
     def check(
-        self, pandera_dtype: "DataType", data_container: Optional[Any] = None
+        self, pandera_dtype: DataType, data_container: Optional[Any] = None
     ) -> Union[bool, Iterable[bool]]:
         return (
             isinstance(pandera_dtype, Int)
@@ -313,7 +313,7 @@ class Float(_PhysicalNumber):  # type: ignore
     bit_width = 64
 
     def check(
-        self, pandera_dtype: "DataType", data_container: Optional[Any] = None
+        self, pandera_dtype: DataType, data_container: Optional[Any] = None
     ) -> Union[bool, Iterable[bool]]:
         return (
             isinstance(pandera_dtype, Float)
@@ -367,7 +367,7 @@ class Complex(_PhysicalNumber):  # type: ignore
     bit_width = 128
 
     def check(
-        self, pandera_dtype: "DataType", data_container: Optional[Any] = None
+        self, pandera_dtype: DataType, data_container: Optional[Any] = None
     ) -> Union[bool, Iterable[bool]]:
         return (
             isinstance(pandera_dtype, Complex)
@@ -492,7 +492,7 @@ class Category(DataType):  # type: ignore
         object.__setattr__(self, "ordered", ordered)
 
     def check(
-        self, pandera_dtype: "DataType", data_container: Optional[Any] = None
+        self, pandera_dtype: DataType, data_container: Optional[Any] = None
     ) -> Union[bool, Iterable[bool]]:
         if isinstance(pandera_dtype, Category) and (
             self.categories is None or pandera_dtype.categories is None

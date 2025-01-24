@@ -28,7 +28,7 @@ nox.options.sessions = (
 )
 
 DEFAULT_PYTHON = "3.8"
-PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11"]
+PYTHON_VERSIONS = ["3.8", "3.9", "3.10", "3.11", "3.12"]
 PANDAS_VERSIONS = ["1.5.3", "2.2.2"]
 PYDANTIC_VERSIONS = ["1.10.11", "2.3.0"]
 
@@ -65,7 +65,7 @@ def _build_setup_requirements() -> Dict[str, List[Requirement]]:
 
 def _build_dev_requirements() -> List[Requirement]:
     """Load requirements from file."""
-    with open(REQUIREMENT_PATH, "rt", encoding="utf-8") as req_file:
+    with open(REQUIREMENT_PATH, encoding="utf-8") as req_file:
         reqs = []
         for req in parse_requirements(req_file.read()):
             req.marker = None
@@ -346,6 +346,7 @@ def ci_requirements(session: Session, pandas: str, pydantic: str) -> None:
                 "3.9",
                 "3.10",
                 "3.11",
+                "3.12",
             ):
                 line = "dask[dataframe]>=2023.9.2\n"
             requirements.append(line)

@@ -345,24 +345,20 @@ def _register_numpy_numbers(
         # e.g.: numpy.int64
         np_dtype = getattr(np, f"{builtin_name}{bit_width}")
 
-        equivalents = set(
-            (
-                np_dtype,
-                # e.g.: pandera.dtypes.Int64
-                getattr(dtypes, f"{pandera_name}{bit_width}"),
-                getattr(dtypes, f"{pandera_name}{bit_width}")(),
-            )
-        )
+        equivalents = {
+            np_dtype,
+            # e.g.: pandera.dtypes.Int64
+            getattr(dtypes, f"{pandera_name}{bit_width}"),
+            getattr(dtypes, f"{pandera_name}{bit_width}")(),
+        }
 
         if np_dtype == default_pd_dtype:
-            equivalents |= set(
-                (
-                    default_pd_dtype,
-                    builtin_name,
-                    getattr(dtypes, pandera_name),
-                    getattr(dtypes, pandera_name)(),
-                )
-            )
+            equivalents |= {
+                default_pd_dtype,
+                builtin_name,
+                getattr(dtypes, pandera_name),
+                getattr(dtypes, pandera_name)(),
+            }
             if builtin_type:
                 equivalents.add(builtin_type)
 

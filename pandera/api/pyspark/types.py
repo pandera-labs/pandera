@@ -62,10 +62,9 @@ PySparkDtypeInputTypes = Union[
     pst.BinaryType,
 ]
 
-SupportedTypes = NamedTuple(
-    "SupportedTypes",
-    (("table_types", Tuple[type, ...]),),
-)
+
+class SupportedTypes(NamedTuple):
+    table_types: Tuple[type, ...]
 
 
 class PysparkDataframeColumnObject(NamedTuple):

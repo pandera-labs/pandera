@@ -18,7 +18,7 @@ def docstring_substitution(*args: Any, **kwargs: Any) -> Callable[[F], F]:
             _doc = func.__doc__ % tuple(args)  # type: ignore[operator]
         elif kwargs:
             _doc = func.__doc__ % kwargs  # type: ignore[operator]
-        func.__doc__ = _doc
+        func.__doc__ = _doc  # pylint:disable=possibly-used-before-assignment
         return func
 
     return decorator

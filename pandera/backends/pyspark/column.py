@@ -203,7 +203,7 @@ class ColumnSchemaBackend(PysparkSchemaBackend):
 
         return CoreCheckResult(
             check=f"dtype('{schema.dtype}')",
-            reason_code=reason_code,
+            reason_code=reason_code,  # pylint:disable=possibly-used-before-assignment
             passed=passed,
             message=msg,
             failure_cases=failure_cases,

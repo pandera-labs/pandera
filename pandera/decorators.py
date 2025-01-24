@@ -703,7 +703,7 @@ def check_types(
                                 errors.SchemaErrorReason.INVALID_TYPE,
                             ),
                         )
-                        continue
+                        continue  # pylint: disable=unreachable
 
                 if data_container_type and config and config.to_format:
                     arg_value = data_container_type.to_format(
