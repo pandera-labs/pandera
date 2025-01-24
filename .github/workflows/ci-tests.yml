@@ -235,6 +235,9 @@ jobs:
           polars-version: "0.20.31"
         - extra: pyspark
           polars-version: "0.20.31"
+        # pyspark < 4.0 is doesn't work on 3.12
+        - extra: pyspark
+          python-version: "3.12"
         - extra: modin-dask
           polars-version: "0.20.31"
         - extra: modin-ray
