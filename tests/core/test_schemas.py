@@ -2677,3 +2677,142 @@ def test_schema_column_default_handle_nans(
     df = pd.DataFrame({"column1": [input_value]})
     schema.validate(df, inplace=True)
     assert df.iloc[0]["column1"] == default
+
+
+@pytest.mark.parametrize(
+    "schema, obj, expected_obj, check_dtype",
+    [
+        (
+            DataFrameSchema(
+                columns={
+                    "temperature": Column(float, nullable=False),
+                },
+                index=MultiIndex(
+                    [
+                        Index(pd.Timestamp, name="timestamp"),
+                        Index(str, name="city"),
+                    ]
+                ),
+                drop_invalid_rows=True,
+            ),
+            pd.DataFrame(
+                {
+                    "temperature": [
+                        3.0,
+                        4.0,
+                        5.0,
+                        5.0,
+                        np.nan,
+                        2.0,
+                    ],
+                },
+                index=pd.MultiIndex.from_tuples(
+                    (
+                        (pd.Timestamp("2022-01-01"), "Paris"),
+                        (pd.Timestamp("2023-01-01"), "Paris"),
+                        (pd.Timestamp("2024-01-01"), "Paris"),
+                        (pd.Timestamp("2022-01-01"), "Oslo"),
+                        (pd.Timestamp("2023-01-01"), "Oslo"),
+                        (pd.Timestamp("2024-01-01"), "Oslo"),
+                    ),
+                    names=["timestamp", "city"],
+                ),
+            ),
+            pd.DataFrame(
+                {
+                    "temperature": [3.0, 4.0, 5.0, 5.0, 2.0],
+                },
+                index=pd.MultiIndex.from_tuples(
+                    (
+                        (pd.Timestamp("2022-01-01"), "Paris"),
+                        (pd.Timestamp("2023-01-01"), "Paris"),
+                        (pd.Timestamp("2024-01-01"), "Paris"),
+                        (pd.Timestamp("2022-01-01"), "Oslo"),
+                        (pd.Timestamp("2024-01-01"), "Oslo"),
+                    ),
+                    names=["timestamp", "city"],
+                ),
+            ),
+            True,
+        ),
+        (
+            DataFrameSchema(
+                columns={
+                    "temperature": Column(float, nullable=False),
+                },
+                index=MultiIndex(
+                    [
+                        Index(pd.Timestamp, name="timestamp"),
+                        Index(str, name="city"),
+                    ]
+                ),
+                drop_invalid_rows=True,
+            ),
+            pd.DataFrame(
+                {
+                    "temperature": [
+                        3.0,
+                        4.0,
+                        5.0,
+                        -1.0,
+                        np.nan,
+                        -2.0,
+                        4.0,
+                        5.0,
+                        2.0,
+                    ],
+                },
+                index=pd.MultiIndex.from_tuples(
+                    (
+                        (pd.Timestamp("2022-01-01"), "Paris"),
+                        (pd.Timestamp("2023-01-01"), "Paris"),
+                        (pd.Timestamp("2024-01-01"), "Paris"),
+                        (pd.Timestamp("2022-01-01"), "Oslo"),
+                        (pd.Timestamp("2023-01-01"), "Oslo"),
+                        (pd.Timestamp("2024-01-01"), "Oslo"),
+                        (
+                            pd.Timestamp("2024-01-01", tz="Europe/London"),
+                            "London",
+                        ),
+                        (pd.Timestamp(pd.NaT), "Frankfurt"),
+                        (pd.Timestamp("2024-01-01"), 6),
+                    ),
+                    names=["timestamp", "city"],
+                ),
+            ),
+            pd.DataFrame(
+                {
+                    "temperature": [3.0, 4.0, 5.0, -1.0, -2.0, 4],
+                },
+                index=pd.MultiIndex.from_tuples(
+                    (
+                        (pd.Timestamp("2022-01-01"), "Paris"),
+                        (pd.Timestamp("2023-01-01"), "Paris"),
+                        (pd.Timestamp("2024-01-01"), "Paris"),
+                        (pd.Timestamp("2022-01-01"), "Oslo"),
+                        (pd.Timestamp("2024-01-01"), "Oslo"),
+                        (
+                            pd.Timestamp("2024-01-01", tz="Europe/London"),
+                            "London",
+                        ),
+                    ),
+                    names=["timestamp", "city"],
+                ),
+            ),
+            False,
+        ),
+    ],
+)
+def test_drop_invalid_for_multi_index_with_datetime(
+    schema, obj, expected_obj, check_dtype
+):
+    """Test drop_invalid_rows works as expected on multi-index dataframes"""
+    actual_obj = schema.validate(obj, lazy=True)
+
+    # the datatype of the index is not casted, In this cases its an object
+    pd.testing.assert_frame_equal(
+        actual_obj,
+        expected_obj,
+        check_dtype=check_dtype,
+        check_index_type=check_dtype,
+    )
