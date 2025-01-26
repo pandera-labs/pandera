@@ -860,6 +860,19 @@ class DateTime(_BaseDateTime, dtypes.Timestamp):
     tz: Optional[datetime.tzinfo] = None
     """The timezone."""
 
+    time_zone_agnostic: bool = False
+    """
+    A flag indicating whether the datetime data should be handled flexibly with respect to timezones.
+
+    - If set to `True` and `coerce` is `False`, the function will accept datetimes with any timezone(s)
+        but not timezone-naive datetimes. If passed, the `tz` argument will be ignored, as this use
+        case is handled by setting `time_zone_agnostic=False`.
+
+    - If set to `True` and `coerce` is `True`, a `tz` must also be specified. The function will then
+        accept datetimes with any timezone(s) and convert them to the specified tz, as well as
+        timezone-naive datetimes, and localize them to the specified tz.
+    """
+
     to_datetime_kwargs: Dict[str, Any] = dataclasses.field(
         default_factory=dict, compare=False, repr=False
     )
@@ -936,13 +949,110 @@ class DateTime(_BaseDateTime, dtypes.Timestamp):
         return cls(unit=pd_dtype.unit, tz=pd_dtype.tz)  # type: ignore
 
     def coerce(self, data_container: PandasObject) -> PandasObject:
+        if self.time_zone_agnostic:
+            data_container = self._prepare_coerce_time_zone_agnostic(
+                data_container=data_container
+            )
         return self._coerce(data_container, pandas_dtype=self.type)
+
+    def _prepare_coerce_time_zone_agnostic(
+        self, data_container: PandasObject
+    ) -> PandasObject:
+        if not self.tz:
+            raise errors.ParserError(
+                "Cannot coerce datetimes when 'time_zone_agnostic=True' and 'tz' is not specified. "
+                "When using 'time_zone_agnostic' and 'coerce', you must specify a timezone using 'tz' parameter.",
+                failure_cases=utils.numpy_pandas_coerce_failure_cases(
+                    data_container, self
+                ),
+            )
+        # If there is a single timezone, define the type as a timezone-aware DatetimeTZDtype
+        if isinstance(data_container.dtype, pd.DatetimeTZDtype):
+            tz = self.tz
+            unit = self.unit if self.unit else data_container.dtype.unit
+            type_ = pd.DatetimeTZDtype(unit, tz)
+            object.__setattr__(self, "tz", tz)
+            object.__setattr__(self, "type", type_)
+        # If there are multiple timezones, convert them to the specified tz and set the type accordingly
+        elif all(isinstance(x, datetime.datetime) for x in data_container):
+            container_type = type(data_container)
+            tz = self.tz
+            unit = self.unit if self.unit else data_container.dtype.unit
+            data_container = container_type(
+                [
+                    (
+                        pd.Timestamp(ts).tz_convert(tz)
+                        if pd.Timestamp(ts).tzinfo
+                        else pd.Timestamp(ts).tz_localize(tz)
+                    )
+                    for ts in data_container
+                ]
+            )
+            type_ = pd.DatetimeTZDtype(unit, tz)
+            object.__setattr__(self, "tz", tz)
+            object.__setattr__(self, "type", type_)
+        else:
+            raise errors.ParserError(
+                "When time_zone_agnostic=True, data must either be:\n"
+                "1. A Series with DatetimeTZDtype (timezone-aware datetime series), or\n"
+                "2. A Series of datetime objects\n"
+                f"Got data with dtype: {data_container.dtype}",
+                failure_cases=utils.numpy_pandas_coerce_failure_cases(
+                    data_container, self
+                ),
+            )
+        return data_container
 
     def coerce_value(self, value: Any) -> Any:
         """Coerce an value to specified datatime type."""
         return self._get_to_datetime_fn(value)(
             value, **self.to_datetime_kwargs
         )
+
+    def check(
+        self,
+        pandera_dtype: dtypes.DataType,
+        data_container: Optional[PandasObject] = None,
+    ) -> Union[bool, Iterable[bool]]:
+        if self.time_zone_agnostic:
+            self._prepare_check_time_zone_agnostic(
+                pandera_dtype=pandera_dtype, data_container=data_container
+            )
+        return super().check(pandera_dtype, data_container)
+
+    def _prepare_check_time_zone_agnostic(
+        self,
+        pandera_dtype: dtypes.DataType,
+        data_container: Optional[PandasObject],
+    ) -> None:
+        # If there is a single timezone, define the type as a timezone-aware DatetimeTZDtype
+        if (
+            isinstance(pandera_dtype, DateTime)
+            and pandera_dtype.tz is not None
+        ):
+            type_ = pd.DatetimeTZDtype(self.unit, pandera_dtype.tz)
+            object.__setattr__(self, "tz", pandera_dtype.tz)
+            object.__setattr__(self, "type", type_)
+        # If the data has a mix of timezones, pandas defines the dtype as 'object`
+        elif all(
+            isinstance(x, datetime.datetime) and x.tzinfo is not None
+            for x in data_container  # type: ignore
+        ):
+            object.__setattr__(self, "type", np.dtype("O"))
+        else:
+            raise errors.ParserError(
+                "When time_zone_agnostic=True, data must either be:\n"
+                "1. A Series with DatetimeTZDtype (timezone-aware datetime series), or\n"
+                "2. A Series of timezone-aware datetime objects\n"
+                f"Got data with dtype: {data_container.dtype if data_container is not None else 'None'}",
+                failure_cases=(
+                    utils.numpy_pandas_coerce_failure_cases(
+                        data_container, self
+                    )
+                    if data_container is not None
+                    else None
+                ),
+            )
 
     def __str__(self) -> str:
         if self.type == np.dtype("datetime64[ns]"):
