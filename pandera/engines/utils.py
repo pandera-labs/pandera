@@ -35,7 +35,7 @@ def numpy_pandas_coercible(series: pd.Series, type_: Any) -> pd.Series:
         except Exception:  # pylint:disable=broad-except
             return False
 
-    return series.map(_coercible)
+    return series.map(_coercible).astype(bool)
 
 
 def numpy_pandas_coerce_failure_cases(
