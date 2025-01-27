@@ -124,8 +124,8 @@ def Field(
     lt: Optional[Any] = None,
     le: Optional[Any] = None,
     in_range: Optional[Dict[str, Any]] = None,
-    isin: Optional[Iterable] = None,
-    notin: Optional[Iterable] = None,
+    isin: Optional[Iterable[Any]] = None,
+    notin: Optional[Iterable[Any]] = None,
     str_contains: Optional[str] = None,
     str_endswith: Optional[str] = None,
     str_length: Optional[Dict[str, Any]] = None,
@@ -144,8 +144,8 @@ def Field(
     title: Optional[str] = None,
     description: Optional[str] = None,
     default: Optional[Any] = None,
-    metadata: Optional[dict] = None,
-    **kwargs,
+    metadata: Optional[Dict[str, Any]] = None,
+    **kwargs: Any,
 ) -> Any:
     """Column or index field specification of a DataFrameModel.
 
