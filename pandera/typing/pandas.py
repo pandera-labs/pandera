@@ -29,11 +29,7 @@ from pandera.typing.common import (
     SeriesBase,
 )
 from pandera.typing.formats import Formats
-
-try:
-    from typing import get_args
-except ImportError:
-    from typing_extensions import get_args
+from pandera.config import config_context
 
 
 try:
@@ -191,11 +187,30 @@ class DataFrame(DataFrameBase, pd.DataFrame, Generic[T]):
         def __get_pydantic_core_schema__(
             cls, _source_type: Any, _handler: GetCoreSchemaHandler
         ) -> core_schema.CoreSchema:
-            schema_model = get_args(_source_type)[0]
+            with config_context(validation_enabled=False):
+                schema_model = _source_type().__orig_class__.__args__[0]
+                schema = schema_model.to_schema()
+            type_map = {
+                "str": core_schema.str_schema(),
+                "int64": core_schema.int_schema(),
+                "float64": core_schema.float_schema(),
+                "bool": core_schema.bool_schema(),
+                "datetime64[ns]": core_schema.datetime_schema(),
+            }
             return core_schema.no_info_plain_validator_function(
                 functools.partial(
                     cls.pydantic_validate,
                     schema_model=schema_model,
+                ),
+                json_schema_input_schema=core_schema.list_schema(
+                    core_schema.typed_dict_schema(
+                        {
+                            i: core_schema.typed_dict_field(
+                                type_map[str(j.dtype)]
+                            )
+                            for i, j in schema.columns.items()
+                        },
+                    )
                 ),
             )
 
